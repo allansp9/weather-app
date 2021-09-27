@@ -11,6 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 
+import axios from "axios";
+
 const SearchBox = ({ cities, setSelectedCity }) => {
   const [query, setQuery] = useState("");
   const [flag, setFlag] = useBoolean();
@@ -23,7 +25,7 @@ const SearchBox = ({ cities, setSelectedCity }) => {
 
   if (query !== "") {
     for (let city of cities) {
-      if (filteredCities.length > 4) {
+      if (filteredCities.length > 10) {
         break;
       }
       const match = city.name.toLowerCase().startsWith(query.toLowerCase());
@@ -41,7 +43,20 @@ const SearchBox = ({ cities, setSelectedCity }) => {
     }
   };
 
-  console.log(filteredCities);
+  const getWeatherData = (city) => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
+      )
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
+  //   console.log(filteredCities);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
@@ -66,14 +81,14 @@ const SearchBox = ({ cities, setSelectedCity }) => {
           >
             {filteredCities.map((city) => (
               <ListItem
-                key={city.geonameid}
+                key={city.id}
                 onClick={() => {
-                  setSelectedCity(city.name);
+                  getWeatherData(city);
                   closeSearch();
                 }}
                 className="p-2 hover:bg-gray-200"
               >
-                {city.name}, {city.subcountry} ({city.country})
+                {city.name} - ({city.country})
               </ListItem>
             ))}
           </List>

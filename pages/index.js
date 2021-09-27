@@ -1,16 +1,10 @@
 import Head from "next/head";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
-import cities from "../lib/cities.json";
+import cityList from "../lib/city.list.json";
 
 import SearchBox from "../components/search-box";
 
-export default function Home({ cities }) {
-  const [selectedCity, setSelectedCity] = useState("");
-
-  console.log(selectedCity);
-
+export default function Home({ cityList }) {
   return (
     <div className="container flex justify-center items-center h-screen m-auto">
       <Head>
@@ -18,7 +12,7 @@ export default function Home({ cities }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <SearchBox cities={cities} setSelectedCity={setSelectedCity} />
+      <SearchBox cities={cityList} />
     </div>
   );
 }
@@ -26,7 +20,7 @@ export default function Home({ cities }) {
 export function getStaticProps() {
   return {
     props: {
-      cities,
+      cityList,
     },
   };
 }
