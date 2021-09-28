@@ -4,7 +4,7 @@ import cityList from "../lib/city.list.json";
 
 import SearchBox from "../components/search-box";
 
-export default function Home({ cityList }) {
+export default function Home() {
   return (
     <div className="container flex justify-center items-center h-screen m-auto">
       <Head>
@@ -15,12 +15,4 @@ export default function Home({ cityList }) {
       <SearchBox cities={cityList} />
     </div>
   );
-}
-
-export function getStaticProps() {
-  return {
-    props: {
-      cityList,
-    },
-  };
 }

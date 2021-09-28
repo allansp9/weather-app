@@ -56,7 +56,7 @@ const SearchBox = ({ cities, setSelectedCity }) => {
       });
   };
 
-  //   console.log(filteredCities);
+  console.log(filteredCities);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
