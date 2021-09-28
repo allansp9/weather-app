@@ -60,7 +60,7 @@ const SearchBox = ({ cities, setSelectedCity }) => {
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
-      <h1>Weather App</h1>
+      <h1 className="text-4xl mb-10">Weather App</h1>
       <div className="w-full h-[400px]">
         <InputGroup>
           <InputLeftElement>
