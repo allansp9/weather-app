@@ -13,40 +13,41 @@ import { SearchIcon } from "@chakra-ui/icons";
 
 import axios from "axios";
 
-const SearchBox = ({ cities, setSelectedCity }) => {
-  const [query, setQuery] = useState("");
-  const [flag, setFlag] = useBoolean();
-  const listRef = useRef();
-  const inputRef = useRef();
+const SearchBox = ({ coords }) => {
+  console.log(coords);
+  // const [query, setQuery] = useState("");
+  // const [flag, setFlag] = useBoolean();
+  // const listRef = useRef();
+  // const inputRef = useRef();
 
-  useOutsideClick({ ref: listRef, handler: () => closeSearch() });
+  // useOutsideClick({ ref: listRef, handler: () => closeSearch() });
 
-  let filteredCities = [];
+  // // let filteredCities = [];
 
-  if (query !== "") {
-    for (let city of cities) {
-      if (filteredCities.length > 10) {
-        break;
-      }
-      const match = city.name.toLowerCase().startsWith(query.toLowerCase());
+  // // if (query !== "") {
+  // //   for (let city of cities) {
+  // //     if (filteredCities.length > 10) {
+  // //       break;
+  // //     }
+  // //     const match = city.name.toLowerCase().startsWith(query.toLowerCase());
 
-      if (match) {
-        filteredCities.push(city);
-      }
-    }
-  }
+  // //     if (match) {
+  // //       filteredCities.push(city);
+  // //     }
+  // //   }
+  // // }
 
-  const closeSearch = () => {
-    setFlag.off();
-    if (inputRef.current) {
-      setQuery("");
-    }
-  };
+  // // const closeSearch = () => {
+  // //   setFlag.off();
+  // //   if (inputRef.current) {
+  // //     setQuery("");
+  // //   }
+  // // };
 
-  const getWeatherData = (city) => {
+  const getWeatherData = () => {
     axios
       .get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${coords.lat}&lon=${coords.lng}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
       )
       .then(function (response) {
         console.log(response.data);
@@ -56,12 +57,13 @@ const SearchBox = ({ cities, setSelectedCity }) => {
       });
   };
 
-  console.log(filteredCities);
+  getWeatherData();
+  // console.log(filteredCities);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <h1 className="text-4xl mb-10">Weather App</h1>
-      <div className="w-full h-[400px]">
+      {/* <div className="w-full h-[400px]">
         <InputGroup>
           <InputLeftElement>
             <SearchIcon />
@@ -93,7 +95,7 @@ const SearchBox = ({ cities, setSelectedCity }) => {
             ))}
           </List>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
