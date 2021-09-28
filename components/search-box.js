@@ -43,18 +43,18 @@ const SearchBox = ({ cities, setSelectedCity }) => {
     }
   };
 
-  const getWeatherData = (city) => {
-    axios
-      .get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
-      )
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  };
+  // const getWeatherData = (city) => {
+  //   axios
+  //     .get(
+  //       `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
+  //     )
+  //     .then(function (response) {
+  //       console.log(response.data);
+  //     })
+  //     .catch(function (error) {
+  //       console.error(error);
+  //     });
+  // };
 
   //   console.log(filteredCities);
 
@@ -83,7 +83,7 @@ const SearchBox = ({ cities, setSelectedCity }) => {
               <ListItem
                 key={city.id}
                 onClick={() => {
-                  getWeatherData(city);
+                  // getWeatherData(city);
                   closeSearch();
                 }}
                 className="p-2 hover:bg-gray-200"
