@@ -40,7 +40,7 @@ const WeatherDisplay = ({ weatherData }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center items-center">
         <Image
           src={`https://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`}
           alt={current.weather[0].description}
