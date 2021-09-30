@@ -9,7 +9,7 @@ This is a simple Weather Forecast App where a user can search for any place in t
 
 ## Main Technologies
 
-- React with NextJS
+- NextJS
 - TailwindCSS
 - Google Places API
 
