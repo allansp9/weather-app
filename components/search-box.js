@@ -13,7 +13,7 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 
-function SearchBox({ setWeatherData }) {
+function SearchBox({ setWeatherData, setLoading }) {
   const {
     ready,
     value,
@@ -27,6 +27,7 @@ function SearchBox({ setWeatherData }) {
     setValue(address, false);
     clearSuggestions();
     try {
+      setLoading(true);
       const results = await getGeocode({ address });
       const { lat, lng } = await getLatLng(results[0]);
       axios
@@ -42,6 +43,7 @@ function SearchBox({ setWeatherData }) {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (
