@@ -1,101 +1,100 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import {
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  List,
-  ListItem,
-  useBoolean,
-  useOutsideClick,
-} from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
-
+import Image from "next/image";
 import axios from "axios";
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxPopover,
+  ComboboxList,
+  ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
 
-const SearchBox = ({ cities, setSelectedCity }) => {
-  const [query, setQuery] = useState("");
-  const [flag, setFlag] = useBoolean();
-  const listRef = useRef();
-  const inputRef = useRef();
-
-  useOutsideClick({ ref: listRef, handler: () => closeSearch() });
-
-  let filteredCities = [];
-
-  if (query !== "") {
-    for (let city of cities) {
-      if (filteredCities.length > 10) {
-        break;
-      }
-      const match = city.name.toLowerCase().startsWith(query.toLowerCase());
-
-      if (match) {
-        filteredCities.push(city);
-      }
+function SearchBox({ setWeatherData, setLoading }) {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    debounce: 300,
+  });
+  const selectHandler = async (address) => {
+    setValue(address, false);
+    clearSuggestions();
+    try {
+      setLoading(true);
+      const results = await getGeocode({ address });
+      const { lat, lng } = await getLatLng(results[0]);
+      axios
+        .get(
+          `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=hourly,minutely`
+        )
+        .then(function (response) {
+          setWeatherData(response.data);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    } catch (error) {
+      console.log(error);
     }
-  }
-
-  const closeSearch = () => {
-    setFlag.off();
-    if (inputRef.current) {
-      setQuery("");
-    }
+    setLoading(false);
   };
-
-  const getWeatherData = (city) => {
-    axios
-      .get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${city.coord.lat}&lon=${city.coord.lon}&appid=${process.env.NEXT_PUBLIC_API_KEY}&units=metric&exclude=minutely`
-      )
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  };
-
-  console.log(filteredCities);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
-      <h1 className="text-4xl mb-10">Weather App</h1>
-      <div className="w-full h-[400px]">
-        <InputGroup>
-          <InputLeftElement>
-            <SearchIcon />
-          </InputLeftElement>
-          <Input
-            value={query}
-            placeholder="Search..."
-            onChange={(e) => setQuery(e.target.value)}
-            onClick={setFlag.on}
-            ref={inputRef}
+    <div className="w-full max-w-[1200px] mb-8">
+      <Combobox onSelect={(address) => selectHandler(address)}>
+        <div className="flex">
+          <ComboboxInput
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            disabled={!ready}
+            placeholder="Search some place..."
+            className="border-2 border-blue-400 w-full p-4"
           />
-        </InputGroup>
-        {flag && filteredCities.length > 0 && (
-          <List
-            ref={listRef}
-            className="border-2 rounded-md border-[#3182ce] shadow mt-1 p-2 w-full"
-          >
-            {filteredCities.map((city) => (
-              <ListItem
-                key={city.id}
-                onClick={() => {
-                  getWeatherData(city);
-                  closeSearch();
-                }}
-                className="p-2 hover:bg-gray-200"
+          {value && (
+            <button onClick={() => setValue("")} className="-ml-10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                {city.name} - ({city.country})
-              </ListItem>
-            ))}
-          </List>
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
+        {status === "OK" && (
+          <ComboboxPopover>
+            <ComboboxList>
+              {data.map(({ place_id, description }) => (
+                <ComboboxOption key={place_id} value={description} />
+              ))}
+              <li className="text-right">
+                <Image
+                  src="https://developers.google.com/maps/documentation/images/powered_by_google_on_white.png"
+                  alt="Powered by Google"
+                  layout="fixed"
+                  height="18"
+                  width="144"
+                />
+              </li>
+            </ComboboxList>
+          </ComboboxPopover>
         )}
-      </div>
+      </Combobox>
     </div>
   );
-};
+}
 
 export default SearchBox;
