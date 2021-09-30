@@ -1,6 +1,7 @@
-#Weather Forecast App
+# Weather Forecast App
 
 Live Demo: [https://weather-app-ten-ecru.vercel.app/](https://weather-app-ten-ecru.vercel.app/)
+
 Video Demo: <https://youtu.be/EnBkp2cuPBI>
 
 ## Description
